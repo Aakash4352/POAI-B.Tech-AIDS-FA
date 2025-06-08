@@ -1,0 +1,42 @@
+import heapq
+
+class Node:
+    def _init_(self, state, parent, g, h):
+        self.state = state
+        self.parent = parent
+        self.g = g
+        self.h = h
+        self.f = g + h
+    def _lt_(self, other):
+        return self.f < other.f
+
+def heuristic(state, goal):
+    return abs(state[0] - goal[0]) + abs(state[1] - goal[1])
+
+def neighbors(state):
+    x, y = state
+    return [((x+1, y), 1), ((x-1, y), 1), ((x, y+1), 1), ((x, y-1), 1)]
+
+def a_star_search(start, goal):
+    open_list = []
+    closed_set = set()
+    heapq.heappush(open_list, Node(start, None, 0, heuristic(start, goal)))
+    while open_list:
+        current = heapq.heappop(open_list)
+        if current.state == goal:
+            path = []
+            while current:
+                path.append(current.state)
+                current = current.parent
+            return path[::-1]
+        closed_set.add(current.state)
+        for neighbor, cost in neighbors(current.state):
+            if neighbor in closed_set:
+                continue
+            g = current.g + cost
+            h = heuristic(neighbor, goal)
+            heapq.heappush(open_list, Node(neighbor, current, g, h))
+    return None
+
+path = a_star_search((0, 0), (3, 3))
+print("Path from start to goal:", path)
