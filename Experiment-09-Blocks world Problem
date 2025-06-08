@@ -1,0 +1,43 @@
+class BlocksWorld:
+    def _init_(self, num_blocks):
+        self.state = [[block] for block in range(num_blocks)]
+        self.num_blocks = num_blocks
+
+    def display_state(self):
+        for stack in self.state:
+            print(f"Block(s) on stack: {stack}")
+
+    def move(self, block, destination):
+        source_stack = self.find_block(block)
+        destination_stack = self.find_block(destination)
+        if not source_stack or not destination_stack:
+            print(f"Invalid move for block {block} to {destination}")
+            return
+        source_stack.remove(block)
+        destination_stack.append(block)
+        self.display_state()
+
+    def find_block(self, block):
+        for stack in self.state:
+            if block in stack:
+                return stack
+        return None
+
+    def goal_state(self, goal):
+        self.state = goal
+        print("Goal state set.")
+        self.display_state()
+
+def main():
+    bw = BlocksWorld(3)
+    print("Initial state:")
+    bw.display_state()
+    goal = [[0, 1], [2]]
+    bw.goal_state(goal)
+    print("Performing Moves:")
+    bw.move(0, 2)
+    bw.move(1, 2)
+    bw.move(2, 0)
+
+if _name_ == "_main_":
+    main()
